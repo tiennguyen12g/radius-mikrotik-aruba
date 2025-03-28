@@ -6,6 +6,7 @@
 /log print where topics~"manager"
 
 - Set for loging connection:
+```bash
 /system hardware
 set allow-x86-64=yes
 /system logging
@@ -13,7 +14,7 @@ add topics=radius,debug
 add topics=manager
 /system note
 set show-at-login=no
-
+```
 ## B. Config in Mikrotik
 #### Note: I have 2 mikrotiks, the 1st get internet from ISP and create VLAN-ID.
 Mikrotik-2 just connect to Mik-1 to get internet and VLAN. I use mikrotik-2 to connect and manager with Aruba AP.
@@ -58,13 +59,15 @@ set servers=8.8.8.8,8.8.4.4
 add action=masquerade chain=srcnat out-interface=bridge1
 ```
 2. Create Radius server for listening request from wireless (Aruba AP)
+```bash
 /radius
 add address=127.0.0.1 require-message-auth=no service=wireless
 /radius incoming
 set accept=yes
+```
 3. Config User-Manager
 3.1 You have to create file certificate for Radius and Aruba.
-
+```bash
 /certificate
 add name=radius-ca common-name="RADIUS CA" key-size=secp384r1 digest-algorithm=sha384 days-valid=1825 key-usage=key-cert-sign,crl-sign
 sign radius-ca ca-crl-host=radius.mikrotik.test
@@ -80,22 +83,28 @@ sign client-cert ca=radius-ca
 /certificate
 export-certificate radius-ca file-name=radius-ca
 export-certificate client-cert type=pkcs12 export-passphrase="YourPassphrase"
-
+```
 3.2 Setting Profile and Users
 * Set user-manager use the cert file that created above.
+```bash
 /user-manager
 set certificate=userman-cert enabled=yes require-message-auth=no \
     use-profiles=yes
+```
 * Add wireless (router). The address-ip is IP the mikrotik assign to Aruba.
+```bash
 /user-manager router
 add address=192.168.88.250 name=router1
+```
 * Create profile
+```bash
 /user-manager profile
 add name=prof1 name-for-users=prof1 validity=unlimited
-
+```
 * Create users ( multiples; group use the default; use internet by default)
 If you want to assign unique VLAN (specific IP), you nee to add some attributes:
 ( Shared Users: 1 mean only one device can use this account to connect wifi)
+```bash
 /user-manager user
 add attributes=Tunnel-Type:13,Tunnel-Medium-Type:6,Tunnel-Private-Group-ID:34 \
     name=user1
@@ -103,7 +112,7 @@ add name=user2
 add name=user3
 add attributes=Tunnel-Type:13,Tunnel-Medium-Type:6,Tunnel-Private-Group-ID:35 \
     name=user4
-
+```
 Explain: 
 Attribute Name	Value	Description
 Tunnel-Type	13 (VLAN)	Defines the tunnel type as VLAN
@@ -111,16 +120,18 @@ Tunnel-Medium-Type	6 (IEEE 802)	Specifies Ethernet as the transport medium
 Tunnel-Private-Group-ID	10 (or your VLAN ID)	The VLAN ID assigned to the user
 
 * Connect user to profile.
+```bash
 /user-manager user-profile
 add profile=prof1 user=user1
 add profile=prof1 user=user3
 add profile=prof1 user=user2
 add profile=prof1 user=user4
-
+```
 ## C. Config Aruba AP. (I use aruba iap-305)
 1. Create Radius Authentication Servers
 Configuration -> Security -> Authentication Servers 
 Add server with these parameters below
+```bash
 Type: Radius
 Name: Your favorit
 IP Address: IP root of mikrotik (in my case, it is 192.168.88.1)
@@ -129,8 +140,9 @@ Accounting port: 1813
 Shared Key: the same key in Radius in Mikrotik
 Status-Server: Authentication checked; Accounting checked;
 Service-type Framed-User: 802.1X checked;
+```
 
-2. Upload certificate file that we create in mikrotik to aruba.
+3. Upload certificate file that we create in mikrotik to aruba.
 
 *Since we have exported cert file already, we go to file in mikrotik and download it ( file name: radius-ca.crt)
 
