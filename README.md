@@ -1,7 +1,7 @@
 # radius-mikrotik-aruba
-Config User-Manager Mikrotik connect to Aruba AP using Radius Wireless
+#Config User-Manager Mikrotik connect to Aruba AP using Radius Wireless
 
-##A. Some commands to check the config and the connection
+## A. Some commands to check the config and the connection
 1. Get user-manager logs, the connect-disconnect to server.
 /log print where topics~"manager"
 
@@ -14,14 +14,14 @@ add topics=manager
 /system note
 set show-at-login=no
 
-##B. Config in Mikrotik
+## B. Config in Mikrotik
 #### Note: I have 2 mikrotiks, the 1st get internet from ISP and create VLAN-ID.
 Mikrotik-2 just connect to Mik-1 to get internet and VLAN. I use mikrotik-2 to connect and manager with Aruba AP.
 
 1. Create Bridge
 I create brige and adding all ether port to bridge.
 You have to create IP for bridge, if you dont do it, the aruba connect to Mik-2 but it will get IP from Mik-1.
-
+```bash
 /interface bridge
 add name=bridge1
 /interface ethernet
@@ -56,6 +56,7 @@ add address=192.168.88.0/24 gateway=192.168.88.1
 set servers=8.8.8.8,8.8.4.4
 /ip firewall nat
 add action=masquerade chain=srcnat out-interface=bridge1
+```
 2. Create Radius server for listening request from wireless (Aruba AP)
 /radius
 add address=127.0.0.1 require-message-auth=no service=wireless
@@ -116,7 +117,7 @@ add profile=prof1 user=user3
 add profile=prof1 user=user2
 add profile=prof1 user=user4
 
-##C. Config Aruba AP. (I use aruba iap-305)
+## C. Config Aruba AP. (I use aruba iap-305)
 1. Create Radius Authentication Servers
 Configuration -> Security -> Authentication Servers 
 Add server with these parameters below
