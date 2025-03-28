@@ -144,11 +144,11 @@ Service-type Framed-User: 802.1X checked;
 
 3. Upload certificate file that we create in mikrotik to aruba.
 
-*Since we have exported cert file already, we go to file in mikrotik and download it ( file name: radius-ca.crt)
-
+* Since we have exported cert file already, we go to file in mikrotik and download it ( file name: radius-ca.crt)
+```bash
 Maintenance -> Certificates -> Click "Upload New Certificate" and select the file above.
 At "Certificate type" : select "Trusted CA".
-
+```
 * At "Certificate Usage", add the certificate that we have uploaded above.
 
 3. Create SSID
@@ -163,7 +163,7 @@ At "Certificate type" : select "Trusted CA".
 
 ### All done! You can try to connect the phone to wifi with user/pass from user-manager.
 If the phone has successful connected, you will see the user account show in "Sessions".
-*Note: When you set "user" with "Shared Users" = 1.
+* Note: When you set "user" with "Shared Users" = 1.
 When you use the second phone to connect wifi, the 2nd is still connected and access internet.
 Since the wireless ( Aruba AP) is not built-in mikrotik, so the mik cannot disconnect the phone to out of wifi.
 Therefore, this option work only in Mikrotik hap ax ( with wireless built-in)
