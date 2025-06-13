@@ -104,6 +104,7 @@ add name=prof1 name-for-users=prof1 validity=unlimited
 * Create users ( multiples; group use the default; use internet by default)
 If you want to assign unique VLAN (specific IP), you nee to add some attributes:
 ( Shared Users: 1 mean only one device can use this account to connect wifi)
+* Impotant: When create user you can create password or not. When you login on the phone, please use correct password for each user.
 ```bash
 /user-manager user
 add attributes=Tunnel-Type:13,Tunnel-Medium-Type:6,Tunnel-Private-Group-ID:34 \
